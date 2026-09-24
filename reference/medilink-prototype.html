@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediLink — Community Healthcare Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#132C2A;
+  --paper:#F5FAF8;
+  --surface:#FFFFFF;
+  --teal:#0E7C74;
+  --teal-deep:#0A5D57;
+  --teal-tint:#E4F3F1;
+  --sky:#3E6FA6;
+  --sky-tint:#E9F0F8;
+  --amber:#E0A23A;
+  --amber-tint:#FBF0DD;
+  --coral:#C1483F;
+  --coral-tint:#FBEAE8;
+  --moss:#2F8F63;
+  --moss-tint:#E7F5EE;
+  --sand:#DEE8E5;
+  --mist:#6C807D;
+  --radius:14px;
+  --radius-sm:9px;
+  --shadow:0 1px 2px rgba(19,44,42,0.06), 0 8px 24px -12px rgba(19,44,42,0.15);
+  --font-display:'Sora',ui-sans-serif,system-ui,sans-serif;
+  --font-body:'Inter',ui-sans-serif,system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  background:var(--paper);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;letter-spacing:-0.01em;color:var(--ink);}
+p{margin:0;line-height:1.55;}
+button{font-family:inherit;cursor:pointer;}
+input,select{font-family:inherit;}
+a{color:inherit;}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px;border-radius:4px;}
+@media (prefers-reduced-motion: reduce){ *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} }
+
+/* ===== Layout shells ===== */
+.min-h{min-height:100vh;}
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;background:
+  radial-gradient(1100px 500px at 15% -10%, var(--teal-tint), transparent),
+  radial-gradient(900px 500px at 110% 10%, var(--sky-tint), transparent), var(--paper);}
+.auth-card{width:100%;max-width:440px;background:var(--surface);border:1px solid var(--sand);border-radius:20px;box-shadow:var(--shadow);padding:36px 32px;}
+.auth-card.wide{max-width:960px;padding:0;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;}
+.auth-card.wide .auth-side{background:linear-gradient(160deg,var(--teal-deep),var(--teal));color:#fff;padding:44px 36px;display:flex;flex-direction:column;justify-content:space-between;}
+.auth-card.wide .auth-main{padding:36px 32px;}
+@media(max-width:760px){.auth-card.wide{grid-template-columns:1fr;}.auth-card.wide .auth-side{display:none;}}
+
+.app-shell{display:grid;grid-template-columns:248px 1fr;min-height:100vh;}
+@media(max-width:900px){.app-shell{grid-template-columns:1fr;}}
+.sidebar{background:var(--surface);border-right:1px solid var(--sand);padding:22px 16px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh;}
+@media(max-width:900px){.sidebar{display:none;}}
+.side-logo{display:flex;align-items:center;gap:10px;padding:0 6px;}
+.side-nav{display:flex;flex-direction:column;gap:3px;flex:1;}
+.side-foot{border-top:1px solid var(--sand);padding-top:14px;display:flex;flex-direction:column;gap:3px;}
+
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:var(--mist);font-weight:600;font-size:14.5px;text-decoration:none;border:none;background:transparent;width:100%;text-align:left;}
+.nav-item svg{flex-shrink:0;}
+.nav-item:hover{background:var(--teal-tint);color:var(--teal-deep);}
+.nav-item.active{background:var(--teal);color:#fff;}
+
+.main-col{min-width:0;}
+.topbar{display:none;}
+@media(max-width:900px){
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--sand);position:sticky;top:0;z-index:30;}
+}
+.page-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:26px 32px 6px;flex-wrap:wrap;}
+@media(max-width:900px){.page-head{padding:18px 16px 4px;}}
+.page-body{padding:18px 32px 100px;}
+@media(max-width:900px){.page-body{padding:14px 16px 96px;}}
+.back-row{display:flex;align-items:center;gap:8px;padding:16px 32px 0;}
+@media(max-width:900px){.back-row{padding:12px 16px 0;}}
+
+.bottom-nav{display:none;}
+@media(max-width:900px){
+  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--sand);padding:6px 4px 8px;justify-content:space-between;z-index:40;box-shadow:0 -6px 20px -14px rgba(0,0,0,0.25);}
+  .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border:none;background:none;color:var(--mist);font-size:11px;font-weight:600;border-radius:10px;}
+  .bn-item.active{color:var(--teal-deep);}
+  .bn-item.active svg{color:var(--teal);}
+}
+
+.drawer-overlay{position:fixed;inset:0;background:rgba(19,44,42,0.4);z-index:50;display:flex;}
+.drawer{background:var(--surface);width:78%;max-width:300px;height:100%;padding:18px 14px;display:flex;flex-direction:column;gap:18px;animation:slideIn .18s ease-out;}
+@keyframes slideIn{from{transform:translateX(-16px);opacity:.4}to{transform:translateX(0);opacity:1}}
+
+/* ===== Typography helpers ===== */
+.eyebrow{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-deep);font-weight:500;}
+.muted{color:var(--mist);}
+.small{font-size:13px;}
+.h-xl{font-size:34px;font-weight:800;line-height:1.1;}
+.h-lg{font-size:26px;font-weight:700;line-height:1.2;}
+.h-md{font-size:19px;font-weight:700;}
+.h-sm{font-size:15.5px;font-weight:700;}
+@media(max-width:600px){.h-xl{font-size:27px;}.h-lg{font-size:21px;}}
+
+/* ===== Buttons ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:11px;font-weight:700;font-size:14.5px;border:1.5px solid transparent;transition:transform .05s ease, background .15s;white-space:nowrap;}
+.btn:active{transform:scale(0.98);}
+.btn-primary{background:var(--teal);color:#fff;}
+.btn-primary:hover{background:var(--teal-deep);}
+.btn-secondary{background:var(--surface);color:var(--teal-deep);border-color:var(--teal);}
+.btn-secondary:hover{background:var(--teal-tint);}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--sand);}
+.btn-ghost:hover{background:var(--sand);}
+.btn-danger{background:var(--coral);color:#fff;}
+.btn-danger:hover{background:#a53a32;}
+.btn-danger-ghost{background:var(--coral-tint);color:var(--coral);border-color:var(--coral-tint);}
+.btn-block{width:100%;}
+.btn-lg{padding:15px 22px;font-size:15.5px;border-radius:13px;}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:9px;}
+.btn:disabled{opacity:.55;cursor:not-allowed;}
+.btn-icon{padding:9px;border-radius:10px;}
+
+/* ===== Cards / surfaces ===== */
+.card{background:var(--surface);border:1px solid var(--sand);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+.card-flat{background:var(--surface);border:1px solid var(--sand);border-radius:var(--radius);padding:20px;}
+.grid{display:grid;gap:16px;}
+.grid-2{grid-template-columns:1fr 1fr;}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+@media(max-width:900px){.grid-3{grid-template-columns:1fr 1fr;}.grid-4{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+.row{display:flex;gap:10px;align-items:center;}
+.between{justify-content:space-between;}
+.wrap{flex-wrap:wrap;}
+.stack{display:flex;flex-direction:column;gap:10px;}
+.divider{height:1px;background:var(--sand);border:none;margin:14px 0;}
+
+/* ===== Forms ===== */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.field label{font-weight:700;font-size:13.5px;}
+.field .hint{color:var(--mist);font-size:12.5px;}
+.field .error{color:var(--coral);font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:5px;}
+.input, select.input{width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--sand);background:#fff;font-size:15px;color:var(--ink);}
+.input:focus{border-color:var(--teal);}
+.input.err{border-color:var(--coral);background:var(--coral-tint);}
+.input-icon-wrap{position:relative;}
+.input-icon-wrap .input{padding-right:44px;}
+.input-icon-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--mist);padding:6px;border-radius:8px;}
+.checkbox-row{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;line-height:1.4;}
+.checkbox-row input{margin-top:3px;width:17px;height:17px;accent-color:var(--teal);}
+
+/* ===== Badges / status ===== */
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:100px;font-size:12.5px;font-weight:700;}
+.badge.b-avail{background:var(--moss-tint);color:var(--moss);}
+.badge.b-limited{background:var(--amber-tint);color:#9a6a13;}
+.badge.b-unavail{background:var(--coral-tint);color:var(--coral);}
+.badge.b-neutral{background:var(--sand);color:var(--mist);}
+.badge.b-info{background:var(--sky-tint);color:var(--sky);}
+
+/* ===== Alerts ===== */
+.alert{display:flex;gap:11px;padding:13px 15px;border-radius:12px;font-size:14px;align-items:flex-start;}
+.alert-error{background:var(--coral-tint);color:#8f342c;}
+.alert-info{background:var(--sky-tint);color:#2b537c;}
+.alert-success{background:var(--moss-tint);color:#256f4c;}
+.alert svg{flex-shrink:0;margin-top:1px;}
+
+/* ===== Doctor / appointment cards ===== */
+.doc-card{display:flex;gap:14px;padding:18px;border:1px solid var(--sand);border-radius:var(--radius);background:var(--surface);}
+.avatar{width:52px;height:52px;border-radius:14px;background:var(--teal-tint);color:var(--teal-deep);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:17px;flex-shrink:0;}
+.appt-card{border:1px solid var(--sand);border-radius:var(--radius);background:var(--surface);padding:16px 18px;}
+
+/* ===== Chips (date/time selectors) ===== */
+.chip-row{display:flex;flex-wrap:wrap;gap:9px;}
+.chip{padding:10px 16px;border-radius:11px;border:1.5px solid var(--sand);background:#fff;font-weight:700;font-size:14px;color:var(--ink);}
+.chip.selected{background:var(--teal);border-color:var(--teal);color:#fff;}
+.chip:disabled{color:var(--mist);background:var(--sand);border-color:var(--sand);text-decoration:line-through;cursor:not-allowed;}
+
+/* ===== Tables ===== */
+.table-wrap{overflow-x:auto;border:1px solid var(--sand);border-radius:var(--radius);background:var(--surface);}
+table{width:100%;border-collapse:collapse;min-width:640px;}
+th{text-align:left;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--mist);padding:13px 16px;border-bottom:1px solid var(--sand);background:var(--paper);}
+td{padding:13px 16px;border-bottom:1px solid var(--sand);font-size:14px;}
+tr:last-child td{border-bottom:none;}
+
+/* ===== Pulse tracker (signature element) ===== */
+.pulse-track{display:flex;align-items:center;margin:4px 0 2px;}
+.pulse-node-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;}
+.pulse-node{width:15px;height:15px;border-radius:50%;background:var(--sand);border:2px solid var(--sand);}
+.pulse-node.done{background:var(--teal);border-color:var(--teal);}
+.pulse-node.active{background:#fff;border-color:var(--teal);box-shadow:0 0 0 5px var(--teal-tint);}
+.pulse-label{font-size:10.5px;font-weight:700;color:var(--mist);text-align:center;max-width:64px;}
+.pulse-label.on{color:var(--teal-deep);}
+.pulse-seg{flex:1;height:22px;display:flex;align-items:center;min-width:16px;}
+.pulse-seg svg{width:100%;height:22px;overflow:visible;}
+.pulse-line-done{stroke:var(--teal);}
+.pulse-line-todo{stroke:var(--sand);}
+.pulse-beat{stroke:var(--teal);stroke-dasharray:70;stroke-dashoffset:70;animation:beatDraw 1.1s ease-in-out infinite;}
+@keyframes beatDraw{0%{stroke-dashoffset:70;}55%{stroke-dashoffset:0;}100%{stroke-dashoffset:-70;}}
+
+/* ===== Modal / toast ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(19,44,42,0.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px;}
+.modal-box{background:#fff;border-radius:16px;max-width:400px;width:100%;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.25);}
+#toast-root{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;}
+@media(max-width:900px){#toast-root{bottom:82px;}}
+.toast{background:var(--ink);color:#fff;padding:11px 18px;border-radius:100px;font-size:13.5px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.25);animation:toastIn .18s ease-out;}
+@keyframes toastIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== Spinner ===== */
+.spinner{width:46px;height:46px;border-radius:50%;border:4px solid var(--sand);border-top-color:var(--teal);animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.container{max-width:1080px;margin:0 auto;}
+.center{text-align:center;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal-root"></div>
+<div id="toast-root"></div>
+
+<script>
+/* =========================================================
+   ICONS — small hand-built line icon set (24x24, stroke)
+   ========================================================= */
+function ic(name, size){
+  size = size || 20;
+  var p = {
+    logo:'<path d="M12 21s-7-4.5-9.3-9C1 8.2 2.6 4.8 6 4.3c2-.3 3.7.8 4.5 2.3.4.7 1.6.7 2 0C13.3 5.1 15 4 17 4.3c3.4.5 5 3.9 3.3 7.7C19 16.5 12 21 12 21z"/>',
+    home:'<path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9a1 1 0 0 0 1 1h3v-6h4v6h3a1 1 0 0 0 1-1v-9"/>',
+    search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.7-4.7"/>',
+    calendar:'<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',
+    clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    pill:'<rect x="3.5" y="9.5" width="17" height="7" rx="3.5" transform="rotate(-35 12 12)"/><path d="M9 15l6-6" />',
+    card:'<rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18"/><path d="M6.5 14.5h4"/>',
+    user:'<circle cx="12" cy="8.5" r="4"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6"/>',
+    bell:'<path d="M6 10a6 6 0 0 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 14 6 10z"/><path d="M10 18.5a2 2 0 0 0 4 0"/>',
+    logout:'<path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M15 16l4-4-4-4"/><path d="M19 12H9"/>',
+    menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
+    close:'<path d="M6 6l12 12M18 6L6 18"/>',
+    chevronLeft:'<path d="M15 18l-6-6 6-6"/>',
+    chevronRight:'<path d="M9 6l6 6-6 6"/>',
+    check:'<path d="M5 12.5l4.5 4.5L19 7"/>',
+    checkCircle:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/>',
+    xCircle:'<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',
+    alertTriangle:'<path d="M12 4 2.5 20h19L12 4z"/><path d="M12 10.5v4.5"/><circle cx="12" cy="17.5" r="0.6" fill="currentColor" stroke="none"/>',
+    shield:'<path d="M12 3.5l7 3v5c0 5-3 8-7 9-4-1-7-4-7-9v-5l7-3z"/><path d="M9 12l2 2 4-4.5"/>',
+    eye:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
+    eyeOff:'<path d="M4 4l16 16"/><path d="M10.6 6.1A9.5 9.5 0 0 1 12 6c6 0 9.5 6 9.5 6a13 13 0 0 1-3 3.6M7.4 7.5A13.6 13.6 0 0 0 2.5 12S6 18 12 18a9 9 0 0 0 3.3-.6"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/>',
+    edit:'<path d="M4 20l.7-4L16 4.7a2 2 0 0 1 2.8 0l.5.5a2 2 0 0 1 0 2.8L8 19.3l-4 .7z"/>',
+    trash:'<path d="M4.5 7h15"/><path d="M9.5 7V5a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 5v2"/><path d="M6.5 7l1 12.5A2 2 0 0 0 9.5 21.5h5a2 2 0 0 0 2-2L17.5 7"/>',
+    hospital:'<rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M12 8v8M8 12h8"/>',
+    creditShield:'<path d="M12 3.5l7 3v5c0 5-3 8-7 9-4-1-7-4-7-9v-5l7-3z"/>',
+    plus:'<path d="M12 5v14M5 12h14"/>',
+    minus:'<path d="M5 12h14"/>',
+    doc:'<path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z"/><path d="M14 3.5V8h4"/><path d="M9 13h6M9 16.5h6"/>',
+    arrowRight:'<path d="M4 12h15M13 6l6 6-6 6"/>',
+    dot:'<circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/>'
+  }[name] || '';
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';
+}
+
+/* =========================================================
+   DATA (sample / fictional prototype data)
+   ========================================================= */
+var SPECIALTIES = ['Cardiology','General Medicine','Dermatology','Pediatrics','Orthopedics'];
+var HOSPITALS = ['MediLink General Hospital','City Care Hospital','Central Medical Centre'];
+
+var DOCTORS = [
+  {id:'d1', name:'Dr. N. Silva', initials:'NS', specialty:'Cardiology', hospital:'MediLink General Hospital', status:'available', next:'Today, 3:00 PM', fee:3500,
+   bio:'Over 12 years of experience in cardiovascular care, with a focus on preventive heart health and long-term recovery planning.',
+   slots:{'20 Aug':['09:00 AM','10:00 AM','02:00 PM'], '21 Aug':['11:00 AM'], '22 Aug':[]}},
+  {id:'d2', name:'Dr. A. Perera', initials:'AP', specialty:'General Medicine', hospital:'City Care Hospital', status:'limited', next:'Tomorrow, 9:00 AM', fee:2000,
+   bio:'General physician providing everyday health checkups, common illness treatment, and specialist referrals.',
+   slots:{'20 Aug':['09:00 AM'], '21 Aug':['10:00 AM','11:00 AM'], '22 Aug':['09:00 AM','01:00 PM']}},
+  {id:'d3', name:'Dr. R. Fernando', initials:'RF', specialty:'Dermatology', hospital:'Central Medical Centre', status:'unavailable', next:'No slots this week', fee:3000,
+   bio:'Specialist in skin health, covering common dermatological conditions and minor outpatient procedures.',
+   slots:{'20 Aug':[], '21 Aug':[], '22 Aug':[]}},
+  {id:'d4', name:'Dr. K. Jayasuriya', initials:'KJ', specialty:'Pediatrics', hospital:'MediLink General Hospital', status:'available', next:'Today, 4:30 PM', fee:2500,
+   bio:'Pediatrician with a gentle, family-centred approach to children\'s health from infancy through adolescence.',
+   slots:{'20 Aug':['09:00 AM','03:00 PM','04:30 PM'], '21 Aug':['09:00 AM'], '22 Aug':['10:00 AM']}},
+  {id:'d5', name:'Dr. S. Wickrama', initials:'SW', specialty:'Orthopedics', hospital:'City Care Hospital', status:'available', next:'21 Aug, 11:00 AM', fee:4000,
+   bio:'Orthopedic surgeon specialising in joint, bone, and sports-related injuries.',
+   slots:{'20 Aug':[], '21 Aug':['11:00 AM','01:00 PM'], '22 Aug':['09:00 AM']}},
+  {id:'d6', name:'Dr. M. Bandara', initials:'MB', specialty:'Cardiology', hospital:'Central Medical Centre', status:'limited', next:'22 Aug, 10:00 AM', fee:3500,
+   bio:'Cardiologist focused on hypertension management and post-cardiac-event recovery.',
+   slots:{'20 Aug':[], '21 Aug':[], '22 Aug':['10:00 AM']}}
+];
+
+var MEDICINES = [
+  {name:'Paracetamol 500mg', hospital:'MediLink General Hospital', status:'available', stock:'In stock', updated:'10 mins ago'},
+  {name:'Paracetamol 500mg', hospital:'City Care Hospital', status:'limited', stock:'Low stock — 8 units', updated:'1 hour ago'},
+  {name:'Amoxicillin 250mg', hospital:'Central Medical Centre', status:'unavailable', stock:'Out of stock', updated:'Today, 8:00 AM'},
+  {name:'Amoxicillin 250mg', hospital:'MediLink General Hospital', status:'available', stock:'In stock', updated:'30 mins ago'},
+  {name:'Metformin 500mg', hospital:'City Care Hospital', status:'available', stock:'In stock', updated:'2 hours ago'},
+  {name:'Cetirizine 10mg', hospital:'Central Medical Centre', status:'available', stock:'In stock', updated:'45 mins ago'}
+];
+
+var appointments = [
+  {id:'AP-10234', doctor:'Dr. N. Silva', specialty:'Cardiology', hospital:'MediLink General Hospital', date:'15 Aug 2026', time:'10:00 AM', status:'Confirmed', payment:'Paid', fee:3500},
+  {id:'AP-10198', doctor:'Dr. A. Perera', specialty:'General Medicine', hospital:'City Care Hospital', date:'02 Aug 2026', time:'09:00 AM', status:'Completed', payment:'Paid', fee:2000},
+  {id:'AP-10176', doctor:'Dr. R. Fernando', specialty:'Dermatology', hospital:'Central Medical Centre', date:'20 Jul 2026', time:'02:00 PM', status:'Cancelled', payment:'Refunded', fee:3000}
+];
+
+var doctorPatients = [
+  {name:'W. Gunasekara', date:'Today', time:'10:00 AM', status:'Confirmed'},
+  {name:'L. de Silva', date:'Today', time:'02:30 PM', status:'Confirmed'},
+  {name:'T. Ranasinghe', date:'21 Aug', time:'09:00 AM', status:'Pending Payment'},
+  {name:'H. Kumari', date:'12 Aug', time:'11:00 AM', status:'Completed'}
+];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+var S = {
+  user:null,          // {name,email,phone,role}
+  view:'landing',
+  navStack:[],
+  booking:{doctorId:null, date:null, time:null},
+  patientDetails:{name:'', phone:'', email:''},
+  payMethod:'card',
+  lastConfirmation:null,
+  activeAppointmentId:null,
+  drawerOpen:false,
+  doctorAvailability:JSON.parse(JSON.stringify(DOCTORS[0].slots)),
+  medicineFilter:{q:'', hospital:'All Hospitals'},
+  medicineResults:null
+};
+
+function findDoctorById(id){ for(var i=0;i<DOCTORS.length;i++){ if(DOCTORS[i].id===id) return DOCTORS[i]; } return null; }
+function findAppointment(id){ for(var i=0;i<appointments.length;i++){ if(appointments[i].id===id) return appointments[i]; } return null; }
+
+function nav(view, push){
+  if(push!==false){ S.navStack.push(S.view); }
+  S.view = view;
+  S.drawerOpen = false;
+  render();
+  window.scrollTo(0,0);
+}
+function back(){
+  var prev = S.navStack.pop();
+  S.view = prev || 'patientDashboard';
+  S.drawerOpen = false;
+  render();
+  window.scrollTo(0,0);
+}
+function toast(msg){
+  var root = document.getElementById('toast-root');
+  var el = document.createElement('div');
+  el.className='toast';
+  el.textContent = msg;
+  root.appendChild(el);
+  setTimeout(function(){ el.style.opacity='0'; el.style.transition='opacity .25s'; setTimeout(function(){ root.removeChild(el); },250); }, 2600);
+}
+function openModal(html){ document.getElementById('modal-root').innerHTML = '<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box">'+html+'</div></div>'; }
+function closeModal(){ document.getElementById('modal-root').innerHTML=''; }
+function toggleDrawer(){ S.drawerOpen = !S.drawerOpen; render(); }
+function togglePwd(id, btnId){
+  var el = document.getElementById(id);
+  var btn = document.getElementById(btnId);
+  if(el.type==='password'){ el.type='text'; btn.innerHTML = ic('eyeOff',18); }
+  else { el.type='password'; btn.innerHTML = ic('eye',18); }
+}
+
+/* =========================================================
+   SMALL COMPONENT HELPERS
+   ========================================================= */
+function btn(label, opts){
+  opts = opts||{};
+  var cls = 'btn '+(opts.variant?('btn-'+opts.variant):'btn-primary')+(opts.block?' btn-block':'')+(opts.lg?' btn-lg':'')+(opts.sm?' btn-sm':'');
+  var iconHtml = opts.icon ? ic(opts.icon,17) : '';
+  var iconRightHtml = opts.iconRight ? ic(opts.iconRight,17) : '';
+  return '<button type="button" '+(opts.id?('id="'+opts.id+'" '):'')+(opts.disabled?'disabled ':'')+'class="'+cls+'" onclick="'+(opts.onclick||'')+'">'+iconHtml+'<span>'+label+'</span>'+iconRightHtml+'</button>';
+}
+function badge(status){
+  var map = {
+    available:{cls:'b-avail', icon:'✓', label:'Available'},
+    limited:{cls:'b-limited', icon:'⚠', label:'Limited availability'},
+    unavailable:{cls:'b-unavail', icon:'✕', label:'Unavailable'},
+    Confirmed:{cls:'b-avail', icon:'✓', label:'Confirmed'},
+    Completed:{cls:'b-info', icon:'✓', label:'Completed'},
+    Cancelled:{cls:'b-neutral', icon:'✕', label:'Cancelled'},
+    'Pending Payment':{cls:'b-limited', icon:'⚠', label:'Pending Payment'},
+    Paid:{cls:'b-avail', icon:'✓', label:'Paid'},
+    Refunded:{cls:'b-info', icon:'↺', label:'Refunded'}
+  };
+  var m = map[status] || {cls:'b-neutral', icon:'●', label:status};
+  return '<span class="badge '+m.cls+'">'+m.icon+' '+m.label+'</span>';
+}
+function medBadge(status){
+  if(status==='available') return '<span class="badge b-avail">✓ Available</span>';
+  if(status==='limited') return '<span class="badge b-limited">⚠ Limited stock</span>';
+  return '<span class="badge b-unavail">✕ Unavailable</span>';
+}
+function field(labelText, innerHtml, opts){
+  opts = opts||{};
+  return '<div class="field">'+
+    '<label for="'+opts.id+'">'+labelText+'</label>'+
+    innerHtml+
+    (opts.hint?'<span class="hint">'+opts.hint+'</span>':'')+
+    (opts.error?'<span class="error">'+ic('alertTriangle',14)+' '+opts.error+'</span>':'')+
+    '</div>';
+}
+function textInput(id, type, placeholder, value, extraErrClass){
+  return '<input class="input'+(extraErrClass?' err':'')+'" id="'+id+'" type="'+type+'" placeholder="'+placeholder+'" value="'+(value||'')+'">';
+}
+
+/* Pulse tracker — signature element: an ECG-style progress line for the booking journey */
+function pulseTracker(steps, idx){
+  var out = '<div class="pulse-track">';
+  for(var i=0;i<steps.length;i++){
+    var state = i<idx ? 'done' : (i===idx ? 'active' : '');
+    out += '<div class="pulse-node-wrap"><div class="pulse-node '+state+'"></div><span class="pulse-label '+(i<=idx?'on':'')+'">'+steps[i]+'</span></div>';
+    if(i<steps.length-1){
+      var segDone = i<idx;
+      var segActive = i===idx;
+      if(segActive){
+        out += '<div class="pulse-seg"><svg viewBox="0 0 100 22" preserveAspectRatio="none"><path class="pulse-line-todo" d="M0 11 H100" stroke-width="2" fill="none"/><path class="pulse-beat" d="M0 11 H30 L38 3 L46 19 L54 11 H100" stroke-width="2.3" fill="none"/></svg></div>';
+      } else {
+        out += '<div class="pulse-seg"><svg viewBox="0 0 100 22" preserveAspectRatio="none"><path class="'+(segDone?'pulse-line-done':'pulse-line-todo')+'" d="M0 11 H100" stroke-width="2" fill="none"/></svg></div>';
+      }
+    }
+  }
+  out += '</div>';
+  return out;
+}
+
+/* =========================================================
+   NAV CONFIG
+   ========================================================= */
+var PATIENT_NAV = [
+  {key:'dashboard', label:'Dashboard', icon:'home', view:'patientDashboard'},
+  {key:'find', label:'Find Doctor', icon:'search', view:'findDoctor'},
+  {key:'appointments', label:'My Appointments', icon:'calendar', view:'myAppointments'},
+  {key:'medicine', label:'Medicine', icon:'pill', view:'medicineSearch'},
+  {key:'payments', label:'Payments', icon:'card', view:'patientPayments'},
+  {key:'profile', label:'Profile', icon:'user', view:'profile'}
+];
+var PATIENT_BOTTOM = ['dashboard','find','appointments','medicine','profile'];
+var DOCTOR_NAV = [
+  {key:'ddashboard', label:'Dashboard', icon:'home', view:'doctorDashboard'},
+  {key:'davail', label:'Availability', icon:'calendar', view:'doctorAvailability'},
+  {key:'dappts', label:'Appointments', icon:'clock', view:'doctorSchedule'},
+  {key:'dprofile', label:'Profile', icon:'user', view:'profile'}
+];
+var STAFF_NAV = [
+  {key:'sdashboard', label:'Dashboard', icon:'home', view:'staffDashboard'},
+  {key:'sdoctors', label:'Doctors', icon:'user', view:'staffDoctors'},
+  {key:'smedicine', label:'Medicine', icon:'pill', view:'staffMedicine'},
+  {key:'sappts', label:'Appointments & Payments', icon:'card', view:'staffAppointments'},
+  {key:'sprofile', label:'Profile', icon:'user', view:'profile'}
+];
+
+function navSetFor(role){ return role==='doctor'?DOCTOR_NAV: role==='staff'?STAFF_NAV: PATIENT_NAV; }
+
+/* =========================================================
+   SHELLS
+   ========================================================= */
+function authWrap(inner, wide){
+  return '<div class="auth-wrap"><div class="auth-card'+(wide?' wide':'')+'">'+inner+'</div></div>';
+}
+function brandBlock(size){
+  return '<div class="row" style="gap:9px;">'+
+    '<span style="color:var(--teal)">'+ic('logo', size||26)+'</span>'+
+    '<span style="font-family:var(--font-display);font-weight:800;font-size:'+((size||26)-4)+'px;">MediLink</span>'+
+    '</div>';
+}
+
+function appShell(role, activeKey, title, contentHtml, opts){
+  opts = opts || {};
+  var navSet = navSetFor(role);
+  var name = (S.user && S.user.name) || (role==='doctor'?'Dr. N. Silva': role==='staff'?'Staff Member':'Patient');
+
+  var sideItems = navSet.map(function(item){
+    return '<button class="nav-item '+(item.key===activeKey?'active':'')+'" onclick="nav(\''+item.view+'\')">'+ic(item.icon,19)+'<span>'+item.label+'</span></button>';
+  }).join('');
+
+  var bottomHtml = '';
+  if(role==='patient'){
+    bottomHtml = '<div class="bottom-nav">'+ navSet.filter(function(i){return PATIENT_BOTTOM.indexOf(i.key)>-1;}).map(function(item){
+      return '<button class="bn-item '+(item.key===activeKey?'active':'')+'" onclick="nav(\''+item.view+'\')">'+ic(item.icon,20)+'<span>'+item.label.replace('My ','').replace(' & Payments','')+'</span></button>';
+    }).join('') + '</div>';
+  }
+
+  var drawerHtml = '';
+  if(S.drawerOpen){
+    drawerHtml = '<div class="drawer-overlay" onclick="if(event.target===this)toggleDrawer()"><div class="drawer">'+
+      '<div class="row between">'+brandBlock(22)+btn('', {variant:'ghost', icon:'close', onclick:'toggleDrawer()'})+'</div>'+
+      '<div class="side-nav">'+ navSet.map(function(item){
+        return '<button class="nav-item '+(item.key===activeKey?'active':'')+'" onclick="toggleDrawer();nav(\''+item.view+'\')">'+ic(item.icon,19)+'<span>'+item.label+'</span></button>';
+      }).join('') +'</div>'+
+      '<div class="side-foot"><button class="nav-item" onclick="doLogout()">'+ic('logout',19)+'<span>Logout</span></button></div>'+
+      '</div></div>';
+  }
+
+  return '<div class="app-shell">'+
+    '<aside class="sidebar">'+
+      '<div class="side-logo">'+brandBlock(24)+'</div>'+
+      '<div class="side-nav">'+sideItems+'</div>'+
+      '<div class="side-foot">'+
+        '<div class="row" style="padding:8px 12px;">'+
+          '<span class="avatar" style="width:34px;height:34px;border-radius:10px;font-size:13px;">'+(name.split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase())+'</span>'+
+          '<div><div class="h-sm" style="font-size:13.5px;">'+name+'</div><div class="small muted" style="text-transform:capitalize;">'+role+'</div></div>'+
+        '</div>'+
+        '<button class="nav-item" onclick="doLogout()">'+ic('logout',19)+'<span>Logout</span></button>'+
+      '</div>'+
+    '</aside>'+
+    '<div class="main-col">'+
+      '<div class="topbar">'+
+        '<button class="btn btn-icon btn-ghost" onclick="toggleDrawer()">'+ic('menu',20)+'</button>'+
+        brandBlock(21)+
+        '<button class="btn btn-icon btn-ghost" onclick="nav(\'profile\')">'+ic('user',20)+'</button>'+
+      '</div>'+
+      (opts.back? '<div class="back-row"><button class="btn btn-ghost btn-sm" onclick="'+(opts.backAction||'back()')+'">'+ic('chevronLeft',16)+'<span>Back</span></button></div>' : '')+
+      '<div class="page-head"><div><span class="eyebrow">'+role.toUpperCase()+' PORTAL</span><h1 class="h-lg">'+title+'</h1></div>'+(opts.headRight||'')+'</div>'+
+      '<div class="page-body">'+contentHtml+'</div>'+
+    '</div>'+
+    drawerHtml+
+    '</div>';
+}
+
+function doLogout(){ S.user=null; S.navStack=[]; nav('landing', false); toast('You have been logged out.'); }
+
+/* =========================================================
+   VIEWS — AUTH / LANDING
+   ========================================================= */
+function viewLanding(){
+  var features = [
+    {icon:'search', title:'Find available doctors', text:'Search by specialty and hospital, and see real-time availability before you book.'},
+    {icon:'calendar', title:'Book appointments', text:'Pick a date and time that suits you, then confirm in a few simple steps.'},
+    {icon:'pill', title:'Check medicine availability', text:'See whether the medicine you need is in stock before you travel to the hospital.'},
+    {icon:'creditShield', title:'Secure online payment', text:'Pay your appointment fee safely online and get instant confirmation.'}
+  ];
+  var content =
+    '<div style="background:linear-gradient(180deg,var(--teal-tint),transparent 70%);">'+
+    '<div class="container" style="padding:18px 20px 0;"><div class="row between">'+
+      brandBlock(24)+
+      '<div class="row">'+btn('Login',{variant:'ghost', sm:true, onclick:"nav('login')"})+btn('Register',{sm:true, onclick:"nav('register')"})+'</div>'+
+    '</div></div>'+
+    '<div class="container center" style="padding:56px 20px 40px;max-width:720px;">'+
+      '<span class="eyebrow">COMMUNITY HEALTHCARE, SIMPLIFIED</span>'+
+      '<h1 class="h-xl" style="margin-top:10px;">Reach a doctor, check your medicine, and pay — without the trip.</h1>'+
+      '<p class="muted" style="margin-top:14px;font-size:16px;max-width:560px;margin-left:auto;margin-right:auto;">MediLink helps you find available doctors, book appointments, and check medicine stock at nearby hospitals, all from one simple place.</p>'+
+      '<div class="row wrap" style="justify-content:center;margin-top:26px;">'+
+        btn('Find a Doctor',{lg:true, icon:'search', onclick:"nav('login')"})+
+        btn('Check Medicine Availability',{lg:true, variant:'secondary', icon:'pill', onclick:"nav('login')"})+
+      '</div>'+
+    '</div></div>'+
+    '<div class="container" style="padding:10px 20px 60px;">'+
+      '<div class="grid grid-4">'+
+      features.map(function(f){
+        return '<div class="card-flat"><span style="color:var(--teal);">'+ic(f.icon,24)+'</span><h3 class="h-sm" style="margin-top:12px;">'+f.title+'</h3><p class="small muted" style="margin-top:6px;">'+f.text+'</p></div>';
+      }).join('')+
+      '</div>'+
+    '</div>'+
+    '<div style="border-top:1px solid var(--sand);padding:18px 20px;text-align:center;" class="small muted">MediLink is a university HCI prototype. Hospital names and data shown are fictional sample data.</div>';
+  return content;
+}
+
+function viewLogin(){
+  var content =
+    '<div class="center" style="margin-bottom:22px;">'+brandBlock(28)+'<p class="muted small" style="margin-top:10px;">Log in to find doctors, book appointments, and check medicine availability.</p></div>'+
+    (S._loginError? '<div class="alert alert-error" style="margin-bottom:14px;">'+ic('alertTriangle',18)+'<span>'+S._loginError+'</span></div>' : '')+
+    field('Email address', textInput('login-email','email','you@example.com','', S._loginErrField==='email'), {id:'login-email'})+
+    field('Password',
+      '<div class="input-icon-wrap">'+textInput('login-pass','password','Enter your password','', S._loginErrField==='pass')+
+      '<button type="button" class="input-icon-btn" id="login-pass-btn" onclick="togglePwd(\'login-pass\',\'login-pass-btn\')">'+ic('eye',18)+'</button></div>',
+      {id:'login-pass'})+
+    '<div class="row between" style="margin:-6px 0 18px;"><span></span><a href="#" class="small" style="color:var(--teal-deep);font-weight:600;text-decoration:none;" onclick="toast(\'Password reset link sent to your email (demo).\');return false;">Forgot password?</a></div>'+
+    btn('Log in',{block:true, lg:true, onclick:'submitLogin()'})+
+    '<p class="small muted center" style="margin-top:16px;">Demo login: <b>patient@medilink.com</b> / <b>Patient123</b></p>'+
+    '<div class="divider"></div>'+
+    '<p class="center small">Don\'t have an account? <a href="#" style="color:var(--teal-deep);font-weight:700;text-decoration:none;" onclick="nav(\'register\');return false;">Register</a></p>'+
+    '<p class="center small muted" style="margin-top:14px;">Are you a doctor or hospital staff member? <a href="#" style="color:var(--sky);font-weight:700;text-decoration:none;" onclick="nav(\'portalSelect\');return false;">Access your portal</a></p>';
+  return authWrap(content);
+}
+function submitLogin(){
+  var email = document.getElementById('login-email').value.trim();
+  var pass = document.getElementById('login-pass').value;
+  S._loginError=null; S._loginErrField=null;
+  if(!email){ S._loginError='Please enter your email address.'; S._loginErrField='email'; render(); return; }
+  if(!pass){ S._loginError='Please enter your password.'; S._loginErrField='pass'; render(); return; }
+  if(email.toLowerCase()!=='patient@medilink.com' || pass!=='Patient123'){
+    S._loginError='Incorrect email or password.'; S._loginErrField='pass'; render(); return;
+  }
+  S.user={name:'Kasun Perera', email:email, phone:'+94 71 234 5678', role:'patient'};
+  S.patientDetails={name:S.user.name, phone:S.user.phone, email:S.user.email};
+  S._loginError=null;
+  nav('patientDashboard', false);
+  toast('Welcome back, '+S.user.name.split(' ')[0]+'.');
+}
+
+function viewPortalSelect(){
+  var content = '<div class="center" style="margin-bottom:20px;">'+brandBlock(26)+'<p class="muted small" style="margin-top:8px;">Choose your portal to continue.</p></div>'+
+  '<div class="stack">'+
+    '<button class="card-flat" style="text-align:left;" onclick="nav(\'login\')"><div class="row between"><div class="row">'+ic('user',22)+'<div><div class="h-sm">Patient</div><div class="small muted">Book appointments and check medicine</div></div></div>'+ic('chevronRight',18)+'</div></button>'+
+    '<button class="card-flat" style="text-align:left;" onclick="nav(\'doctorLogin\')"><div class="row between"><div class="row">'+ic('doc',22)+'<div><div class="h-sm">Doctor</div><div class="small muted">Manage your schedule and appointments</div></div></div>'+ic('chevronRight',18)+'</div></button>'+
+    '<button class="card-flat" style="text-align:left;" onclick="nav(\'staffLogin\')"><div class="row between"><div class="row">'+ic('hospital',22)+'<div><div class="h-sm">Hospital Staff</div><div class="small muted">Manage doctors, medicine and payments</div></div></div>'+ic('chevronRight',18)+'</div></button>'+
+  '</div>'+
+  '<p class="center small" style="margin-top:18px;"><a href="#" style="color:var(--teal-deep);font-weight:700;text-decoration:none;" onclick="back();return false;">'+ic('chevronLeft',14)+' Back</a></p>';
+  return authWrap(content);
+}
+
+function viewRegister(){
+  var e = S._regErrors || {};
+  var content =
+    '<div class="center" style="margin-bottom:20px;">'+brandBlock(28)+'<p class="muted small" style="margin-top:8px;">Create your MediLink account to get started.</p></div>'+
+    field('Full name', textInput('reg-name','text','e.g. Kasun Perera','',e.name), {id:'reg-name', error:e.name})+
+    field('Email address', textInput('reg-email','email','you@example.com','',e.email), {id:'reg-email', error:e.email})+
+    field('Phone number', textInput('reg-phone','tel','07X XXX XXXX','',e.phone), {id:'reg-phone', error:e.phone})+
+    field('Password',
+      '<div class="input-icon-wrap">'+textInput('reg-pass','password','At least 6 characters','',e.pass)+
+      '<button type="button" class="input-icon-btn" id="reg-pass-btn" onclick="togglePwd(\'reg-pass\',\'reg-pass-btn\')">'+ic('eye',18)+'</button></div>',
+      {id:'reg-pass', error:e.pass})+
+    field('Confirm password',
+      '<div class="input-icon-wrap">'+textInput('reg-pass2','password','Re-enter your password','',e.pass2)+
+      '<button type="button" class="input-icon-btn" id="reg-pass2-btn" onclick="togglePwd(\'reg-pass2\',\'reg-pass2-btn\')">'+ic('eye',18)+'</button></div>',
+      {id:'reg-pass2', error:e.pass2})+
+    '<div class="checkbox-row" style="margin-bottom:20px;"><input type="checkbox" id="reg-terms"><label for="reg-terms">I agree to the Terms of Service and Privacy Policy.'+(e.terms?'<div class="error" style="margin-top:4px;">'+ic('alertTriangle',13)+' '+e.terms+'</div>':'')+'</label></div>'+
+    btn('Create account',{block:true, lg:true, onclick:'submitRegister()'})+
+    '<p class="center small" style="margin-top:16px;">Already have an account? <a href="#" style="color:var(--teal-deep);font-weight:700;text-decoration:none;" onclick="nav(\'login\');return false;">Log in</a></p>';
+  return authWrap(content);
+}
+function submitRegister(){
+  var name=document.getElementById('reg-name').value.trim();
+  var email=document.getElementById('reg-email').value.trim();
+  var phone=document.getElementById('reg-phone').value.trim();
+  var pass=document.getElementById('reg-pass').value;
+  var pass2=document.getElementById('reg-pass2').value;
+  var terms=document.getElementById('reg-terms').checked;
+  var e={};
+  if(!name) e.name='Please enter your full name.';
+  if(!email || !/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) e.email='Please enter a valid email address.';
+  if(!phone || phone.length<7) e.phone='Please enter a valid phone number.';
+  if(!pass || pass.length<6) e.pass='Password must be at least 6 characters.';
+  if(pass2!==pass || !pass2) e.pass2='Passwords do not match.';
+  if(!terms) e.terms='Please accept the terms to continue.';
+  S._regErrors=e;
+  if(Object.keys(e).length){ render(); return; }
+  S.user={name:name, email:email, phone:phone, role:'patient'};
+  S.patientDetails={name:name, phone:phone, email:email};
+  S._regErrors={};
+  nav('patientDashboard', false);
+  toast('Account created. Welcome, '+name.split(' ')[0]+'!');
+}
+
+function viewDoctorLogin(){
+  var content='<div class="center" style="margin-bottom:20px;">'+brandBlock(26)+'<p class="muted small" style="margin-top:8px;">Doctor portal login</p></div>'+
+  (S._docErr?'<div class="alert alert-error" style="margin-bottom:14px;">'+ic('alertTriangle',18)+'<span>'+S._docErr+'</span></div>':'')+
+  field('Email address', textInput('doc-email','email','doctor@medilink.com'), {id:'doc-email'})+
+  field('Password', textInput('doc-pass','password','Enter your password'), {id:'doc-pass'})+
+  btn('Log in',{block:true, lg:true, onclick:'submitDoctorLogin()'})+
+  '<p class="small muted center" style="margin-top:14px;">Demo login: <b>doctor@medilink.com</b> / <b>Doctor123</b></p>'+
+  '<p class="center small" style="margin-top:12px;"><a href="#" style="color:var(--teal-deep);font-weight:700;text-decoration:none;" onclick="nav(\'portalSelect\');return false;">'+ic('chevronLeft',14)+' Back to portal selection</a></p>';
+  return authWrap(content);
+}
+function submitDoctorLogin(){
+  var email=document.getElementById('doc-email').value.trim();
+  var pass=document.getElementById('doc-pass').value;
+  if(!email||!pass){ S._docErr='Please enter both email and password.'; render(); return; }
+  if(email.toLowerCase()!=='doctor@medilink.com'||pass!=='Doctor123'){ S._docErr='Incorrect email or password.'; render(); return; }
+  S.user={name:'Dr. N. Silva', email:email, phone:'', role:'doctor'};
+  S._docErr=null;
+  nav('doctorDashboard', false);
+  toast('Welcome back, Dr. Silva.');
+}
+
+function viewStaffLogin(){
+  var content='<div class="center" style="margin-bottom:20px;">'+brandBlock(26)+'<p class="muted small" style="margin-top:8px;">Hospital staff portal login</p></div>'+
+  (S._staffErr?'<div class="alert alert-error" style="margin-bottom:14px;">'+ic('alertTriangle',18)+'<span>'+S._staffErr+'</span></div>':'')+
+  field('Staff email', textInput('staff-email','email','staff@medilink.com'), {id:'staff-email'})+
+  field('Password', textInput('staff-pass','password','Enter your password'), {id:'staff-pass'})+
+  btn('Log in',{block:true, lg:true, onclick:'submitStaffLogin()'})+
+  '<p class="small muted center" style="margin-top:14px;">Demo login: <b>staff@medilink.com</b> / <b>Staff123</b></p>'+
+  '<p class="center small" style="margin-top:12px;"><a href="#" style="color:var(--teal-deep);font-weight:700;text-decoration:none;" onclick="nav(\'portalSelect\');return false;">'+ic('chevronLeft',14)+' Back to portal selection</a></p>';
+  return authWrap(content);
+}
+function submitStaffLogin(){
+  var email=document.getElementById('staff-email').value.trim();
+  var pass=document.getElementById('staff-pass').value;
+  if(!email||!pass){ S._staffErr='Please enter both email and password.'; render(); return; }
+  if(email.toLowerCase()!=='staff@medilink.com'||pass!=='Staff123'){ S._staffErr='Incorrect email or password.'; render(); return; }
+  S.user={name:'R. Abeywardena', email:email, phone:'', role:'staff'};
+  S._staffErr=null;
+  nav('staffDashboard', false);
+  toast('Welcome back.');
+}
+
+/* =========================================================
+   VIEWS — PATIENT
+   ========================================================= */
+function viewPatientDashboard(){
+  var upcoming = appointments.filter(function(a){return a.status==='Confirmed'||a.status==='Pending Payment';})[0];
+  var services = [
+    {icon:'search', title:'Find a Doctor', text:'Search by specialty or hospital', view:'findDoctor', color:'teal'},
+    {icon:'calendar', title:'Book Appointment', text:'Pick a date and time that suits you', view:'findDoctor', color:'sky'},
+    {icon:'pill', title:'Check Medicine', text:'See what is in stock before you visit', view:'medicineSearch', color:'amber'},
+    {icon:'clock', title:'My Appointments', text:'View, reschedule, or cancel visits', view:'myAppointments', color:'moss'}
+  ];
+  var body =
+    '<div class="card" style="background:linear-gradient(120deg,var(--teal-deep),var(--teal));color:#fff;border:none;margin-bottom:20px;">'+
+      '<span class="eyebrow" style="color:#cfece7;">GOOD TO SEE YOU</span>'+
+      '<h2 class="h-lg" style="color:#fff;margin-top:6px;">Hi '+(S.user?S.user.name.split(' ')[0]:'there')+', how can we help today?</h2>'+
+      '<div class="row wrap" style="margin-top:16px;">'+
+        btn('Find a Doctor',{variant:'ghost', icon:'search', onclick:"nav('findDoctor')"}).replace('btn-ghost','btn-ghost" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.4)')+
+        btn('Check Medicine',{variant:'ghost', icon:'pill', onclick:"nav('medicineSearch')"}).replace('btn-ghost','btn-ghost" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.4)')+
+      '</div>'+
+    '</div>'+
+    '<h3 class="h-md" style="margin-bottom:12px;">Core services</h3>'+
+    '<div class="grid grid-4" style="margin-bottom:24px;">'+
+    services.map(function(s){
+      return '<button class="card-flat" style="text-align:left;" onclick="nav(\''+s.view+'\')"><span style="color:var(--'+s.color+');">'+ic(s.icon,24)+'</span><div class="h-sm" style="margin-top:12px;">'+s.title+'</div><div class="small muted" style="margin-top:4px;">'+s.text+'</div></button>';
+    }).join('')+
+    '</div>'+
+    '<div class="grid grid-2">'+
+      '<div class="card-flat">'+
+        '<div class="row between"><h3 class="h-sm">Upcoming appointment</h3>'+(upcoming?'':'')+'</div>'+
+        (upcoming?
+          '<div style="margin-top:10px;">'+
+          '<div class="row between"><b>'+upcoming.doctor+'</b>'+badge(upcoming.status)+'</div>'+
+          '<div class="small muted" style="margin-top:4px;">'+upcoming.specialty+' • '+upcoming.hospital+'</div>'+
+          '<div class="row" style="margin-top:8px;">'+ic('calendar',16)+'<span class="small">'+upcoming.date+' at '+upcoming.time+'</span></div>'+
+          '<div class="row" style="margin-top:14px;">'+btn('View details',{sm:true, onclick:"nav('appointmentDetails');S.activeAppointmentId='"+upcoming.id+"'"})+btn('My appointments',{sm:true, variant:'ghost', onclick:"nav('myAppointments')"})+'</div>'+
+          '</div>'
+          : '<p class="small muted" style="margin-top:10px;">You have no upcoming appointments. <a href="#" style="color:var(--teal-deep);font-weight:700;" onclick="nav(\'findDoctor\');return false;">Book one now</a>.</p>')+
+      '</div>'+
+      '<div class="card-flat">'+
+        '<h3 class="h-sm">Recent activity</h3>'+
+        '<div class="stack" style="margin-top:10px;">'+
+        appointments.slice(0,2).map(function(a){
+          return '<div class="row between small"><span>'+a.doctor+' — '+a.date+'</span>'+badge(a.payment)+'</div>';
+        }).join('')+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  return appShell('patient','dashboard','Dashboard',body);
+}
+
+function viewFindDoctor(){
+  var body =
+    '<div class="card-flat" style="margin-bottom:20px;">'+
+      '<p class="small muted" style="margin-bottom:14px;">Search for doctors by name, specialty, or hospital, and see who is available now.</p>'+
+      '<div class="grid grid-3">'+
+        field('Search', '<div class="input-icon-wrap">'+textInput('fd-q','text','Doctor name (optional)')+'<span class="input-icon-btn" style="pointer-events:none;">'+ic('search',18)+'</span></div>', {id:'fd-q'})+
+        field('Specialty', '<select class="input" id="fd-spec"><option value="">All specialties</option>'+SPECIALTIES.map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join('')+'</select>', {id:'fd-spec'})+
+        field('Hospital', '<select class="input" id="fd-hosp"><option value="">All hospitals</option>'+HOSPITALS.map(function(h){return '<option value="'+h+'">'+h+'</option>';}).join('')+'</select>', {id:'fd-hosp'})+
+      '</div>'+
+      '<div class="row" style="margin-top:4px;">'+btn('Search',{icon:'search', onclick:'submitFindDoctor()'})+btn('Clear filters',{variant:'ghost', onclick:'clearFindDoctor()'})+'</div>'+
+    '</div>'+
+    '<h3 class="h-sm" style="margin-bottom:10px;">Popular specialties</h3>'+
+    '<div class="chip-row" style="margin-bottom:8px;">'+SPECIALTIES.map(function(s){return '<button class="chip" onclick="quickSpec(\''+s+'\')">'+s+'</button>';}).join('')+'</div>';
+  return appShell('patient','find','Find a Doctor',body);
+}
+function quickSpec(spec){ S.searchSpec=spec; nav('doctorResults'); }
+function submitFindDoctor(){
+  S.searchQ = document.getElementById('fd-q').value.trim().toLowerCase();
+  S.searchSpec = document.getElementById('fd-spec').value;
+  S.searchHosp = document.getElementById('fd-hosp').value;
+  nav('doctorResults');
+}
+function clearFindDoctor(){ S.searchQ=''; S.searchSpec=''; S.searchHosp=''; render(); }
+
+function viewDoctorResults(){
+  var q = S.searchQ||'', spec = S.searchSpec||'', hosp = S.searchHosp||'';
+  var results = DOCTORS.filter(function(d){
+    return (!q || d.name.toLowerCase().indexOf(q)>-1) && (!spec || d.specialty===spec) && (!hosp || d.hospital===hosp);
+  });
+  var body =
+    '<div class="row between wrap" style="margin-bottom:14px;">'+
+      '<p class="small muted">'+results.length+' doctor'+(results.length===1?'':'s')+' found'+(spec?' in '+spec:'')+(hosp?' at '+hosp:'')+'.</p>'+
+      btn('Refine search',{variant:'ghost', sm:true, icon:'search', onclick:"nav('findDoctor')"})+
+    '</div>'+
+    (results.length===0?
+      '<div class="card-flat center" style="padding:40px 20px;"><span style="color:var(--mist);">'+ic('search',34)+'</span><h3 class="h-sm" style="margin-top:12px;">No doctors found</h3><p class="small muted" style="margin-top:6px;">Try a different specialty, hospital, or clear your filters.</p>'+btn('Clear filters',{variant:'secondary', sm:true, onclick:'clearFindDoctor()'}).replace('<button','<button style="margin-top:14px;"')+'</div>'
+      :
+      '<div class="stack">'+results.map(function(d){
+        return '<div class="doc-card">'+
+          '<div class="avatar">'+d.initials+'</div>'+
+          '<div style="flex:1;min-width:0;">'+
+            '<div class="row between wrap"><div><div class="h-sm">'+d.name+'</div><div class="small muted">'+d.specialty+' • '+d.hospital+'</div></div>'+badge(d.status)+'</div>'+
+            '<div class="row" style="margin-top:8px;">'+ic('clock',15)+'<span class="small">Next available: '+d.next+'</span></div>'+
+            '<div class="row" style="margin-top:12px;">'+
+              btn('View details',{sm:true, variant:'ghost', onclick:"openDoctor('"+d.id+"')"})+
+              btn('Book appointment',{sm:true, disabled:d.status==='unavailable', onclick:"openDoctor('"+d.id+"');nav('selectSlot')"})+
+            '</div>'+
+          '</div>'+
+        '</div>';
+      }).join('')+'</div>'
+    );
+  return appShell('patient','find','Search Results',body,{back:true});
+}
+function openDoctor(id){ S.booking.doctorId=id; S.booking.date=null; S.booking.time=null; nav('doctorDetails'); }
+
+function viewDoctorDetails(){
+  var d = findDoctorById(S.booking.doctorId) || DOCTORS[0];
+  var dates = Object.keys(d.slots);
+  var body =
+    '<div class="card-flat">'+
+      '<div class="row" style="align-items:flex-start;">'+
+        '<div class="avatar" style="width:64px;height:64px;font-size:20px;">'+d.initials+'</div>'+
+        '<div><h2 class="h-lg">'+d.name+'</h2><div class="small muted" style="margin-top:4px;">'+d.specialty+' • '+d.hospital+'</div><div style="margin-top:8px;">'+badge(d.status)+'</div></div>'+
+      '</div>'+
+      '<hr class="divider">'+
+      '<h3 class="h-sm">About</h3>'+
+      '<p class="small" style="margin-top:6px;color:var(--ink);">'+d.bio+'</p>'+
+      '<hr class="divider">'+
+      '<div class="row between wrap">'+
+        '<div><div class="small muted">Consultation fee</div><div class="h-md">Rs. '+d.fee.toLocaleString()+'</div></div>'+
+        '<div><div class="small muted">Next available</div><div class="h-sm">'+d.next+'</div></div>'+
+      '</div>'+
+      '<h3 class="h-sm" style="margin-top:18px;">Available dates</h3>'+
+      '<div class="chip-row" style="margin-top:8px;">'+dates.map(function(dt){
+        var has = d.slots[dt].length>0;
+        return '<span class="chip" style="'+(has?'':'opacity:.5;text-decoration:line-through;')+'pointer-events:none;">'+dt+'</span>';
+      }).join('')+'</div>'+
+      '<div style="margin-top:22px;">'+btn('Book Appointment',{lg:true, block:true, disabled:d.status==='unavailable', onclick:"nav('selectSlot')"})+'</div>'+
+      (d.status==='unavailable'?'<p class="small muted center" style="margin-top:10px;">This doctor has no available slots this week. Please check back later or search another doctor.</p>':'')+
+    '</div>';
+  return appShell('patient','find','Doctor Details',body,{back:true});
+}
+
+function viewSelectSlot(){
+  var d = findDoctorById(S.booking.doctorId) || DOCTORS[0];
+  var dates = Object.keys(d.slots);
+  if(!S.booking.date) S.booking.date = dates[0];
+  var times = d.slots[S.booking.date] || [];
+  var allTimes = ['09:00 AM','10:00 AM','11:00 AM','01:00 PM','02:00 PM','03:00 PM','04:30 PM'];
+  var body =
+    pulseTracker(['Doctor','Slot','Summary','Details','Payment','Done'],1)+
+    '<div class="card-flat" style="margin-top:18px;">'+
+      '<div class="row between"><div><b>'+d.name+'</b><div class="small muted">'+d.specialty+' • '+d.hospital+'</div></div>'+badge(d.status)+'</div>'+
+      '<hr class="divider">'+
+      '<h3 class="h-sm">Select a date</h3>'+
+      '<div class="chip-row" style="margin-top:10px;">'+dates.map(function(dt){
+        return '<button class="chip '+(S.booking.date===dt?'selected':'')+'" onclick="pickDate(\''+dt+'\')">'+dt+'</button>';
+      }).join('')+'</div>'+
+      '<h3 class="h-sm" style="margin-top:20px;">Select a time</h3>'+
+      (times.length===0 ? '<div class="alert alert-info" style="margin-top:10px;">'+ic('alertTriangle',18)+'<span>No available time slots on '+S.booking.date+'. Please choose another date.</span></div>' :
+      '<div class="chip-row" style="margin-top:10px;">'+allTimes.map(function(t){
+        var avail = times.indexOf(t)>-1;
+        if(!avail) return '<button class="chip" disabled>'+t+'</button>';
+        return '<button class="chip '+(S.booking.time===t?'selected':'')+'" onclick="pickTime(\''+t+'\')">'+t+'</button>';
+      }).join('')+'</div>')+
+      '<div class="row" style="margin-top:24px;">'+
+        btn('Continue',{lg:true, disabled: !(S.booking.date&&S.booking.time), onclick:"nav('appointmentSummary')"})+
+        btn('Back',{variant:'ghost', onclick:'back()'})+
+      '</div>'+
+    '</div>';
+  return appShell('patient','find','Select Appointment Slot',body,{back:true});
+}
+function pickDate(dt){ S.booking.date=dt; S.booking.time=null; render(); }
+function pickTime(t){ S.booking.time=t; render(); }
+
+function viewAppointmentSummary(){
+  var d = findDoctorById(S.booking.doctorId) || DOCTORS[0];
+  var body =
+    pulseTracker(['Doctor','Slot','Summary','Details','Payment','Done'],2)+
+    '<div class="card-flat" style="margin-top:18px;">'+
+      '<h3 class="h-sm">Appointment summary</h3>'+
+      '<div class="stack" style="margin-top:12px;">'+
+        summaryRow('Doctor', d.name)+
+        summaryRow('Specialty', d.specialty)+
+        summaryRow('Hospital', d.hospital)+
+        summaryRow('Date', S.booking.date)+
+        summaryRow('Time', S.booking.time)+
+        summaryRow('Appointment fee', 'Rs. '+d.fee.toLocaleString())+
+      '</div>'+
+      '<div class="alert alert-info" style="margin-top:16px;">'+ic('pill',18)+'<span>Need to check if your prescribed medicine is in stock? <a href="#" style="color:var(--sky);font-weight:700;" onclick="nav(\'medicineSearch\');return false;">Check medicine availability</a>.</span></div>'+
+      '<div class="row" style="margin-top:22px;">'+
+        btn('Confirm Appointment',{lg:true, onclick:"nav('patientDetails')"})+
+        btn('Back / Edit',{variant:'ghost', onclick:'back()'})+
+      '</div>'+
+    '</div>';
+  return appShell('patient','find','Appointment Summary',body,{back:true});
+}
+function summaryRow(k,v){ return '<div class="row between"><span class="small muted">'+k+'</span><span class="small" style="font-weight:700;">'+v+'</span></div>'; }
+
+function viewPatientDetails(){
+  var pd = S.patientDetails;
+  var e = S._pdErrors||{};
+  var d = findDoctorById(S.booking.doctorId) || DOCTORS[0];
+  var body =
+    pulseTracker(['Doctor','Slot','Summary','Details','Payment','Done'],3)+
+    '<div class="grid grid-2" style="margin-top:18px;align-items:start;">'+
+      '<div class="card-flat">'+
+        '<h3 class="h-sm">Your details</h3>'+
+        field('Full name', textInput('pd-name','text','Full name', pd.name, e.name), {id:'pd-name', error:e.name})+
+        field('Phone number', textInput('pd-phone','tel','Phone number', pd.phone, e.phone), {id:'pd-phone', error:e.phone})+
+        field('Email address', textInput('pd-email','email','Email address', pd.email, e.email), {id:'pd-email', error:e.email})+
+        btn('Continue to Payment',{lg:true, block:true, onclick:'submitPatientDetails()'})+
+      '</div>'+
+      '<div class="card-flat">'+
+        '<h3 class="h-sm">Appointment summary</h3>'+
+        '<div class="stack" style="margin-top:10px;">'+
+          summaryRow('Doctor', d.name)+summaryRow('Hospital', d.hospital)+summaryRow('Date', S.booking.date)+summaryRow('Time', S.booking.time)+summaryRow('Fee', 'Rs. '+d.fee.toLocaleString())+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  return appShell('patient','find','Patient Details',body,{back:true});
+}
+function submitPatientDetails(){
+  var name=document.getElementById('pd-name').value.trim();
+  var phone=document.getElementById('pd-phone').value.trim();
+  var email=document.getElementById('pd-email').value.trim();
+  var e={};
+  if(!name) e.name='Please enter your full name.';
+  if(!phone||phone.length<7) e.phone='Please enter a valid phone number.';
+  if(!email || !/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) e.email='Please enter a valid email address.';
+  S._pdErrors=e;
+  if(Object.keys(e).length){ render(); return; }
+  S.patientDetails={name:name, phone:phone, email:email};
+  S._pdErrors={};
+  nav('payment');
+}
+
+function viewPayment(){
+  var d = findDoctorById(S.booking.doctorId) || DOCTORS[0];
+  var method = S.payMethod;
+  var body =
+    pulseTracker(['Doctor','Slot','Summary','Details','Payment','Done'],4)+
+    '<div class="grid grid-2" style="margin-top:18px;align-items:start;">'+
+      '<div class="card-flat">'+
+        '<div class="row between"><h3 class="h-sm">Payment method</h3>'+ic('creditShield',20)+'</div>'+
+        '<div class="row wrap" style="margin-top:10px;margin-bottom:6px;">'+
+          '<button class="chip '+(method==='card'?'selected':'')+'" onclick="setPayMethod(\'card\')">'+ic('card',15)+' Card</button>'+
+          '<button class="chip '+(method==='bank'?'selected':'')+'" onclick="setPayMethod(\'bank\')">'+ic('hospital',15)+' Online Banking</button>'+
+        '</div>'+
+        (method==='card'?
+          field('Cardholder name', textInput('pay-name','text','Name on card'), {id:'pay-name'})+
+          field('Card number', textInput('pay-num','text','1234 5678 9012 3456'), {id:'pay-num', hint:'Tip: end the number with 0000 to preview a failed payment.'})+
+          '<div class="grid grid-2">'+
+            field('Expiry date', textInput('pay-exp','text','MM/YY'), {id:'pay-exp'})+
+            field('CVV', textInput('pay-cvv','password','123'), {id:'pay-cvv'})+
+          '</div>'
+          :
+          field('Select your bank', '<select class="input" id="pay-bank"><option>Bank of Ceylon</option><option>Commercial Bank</option><option>Sampath Bank</option><option>HNB</option></select>', {id:'pay-bank'})+
+          field('Account holder name', textInput('pay-holder','text','Full name as per bank account'), {id:'pay-holder'})
+        )+
+        '<div class="alert alert-info" style="margin:6px 0 18px;">'+ic('shield',18)+'<span>Your payment information is encrypted and protected. MediLink never stores your full card details.</span></div>'+
+        (S._payError?'<div class="alert alert-error" style="margin-bottom:14px;">'+ic('alertTriangle',18)+'<span>'+S._payError+'</span></div>':'')+
+        '<div class="row">'+btn('Pay Now',{lg:true, icon:'shield', id:'pay-now-btn', onclick:'submitPayment()'})+btn('Cancel',{variant:'ghost', onclick:"nav('appointmentSummary')"})+'</div>'+
+      '</div>'+
+      '<div class="card-flat">'+
+        '<h3 class="h-sm">Order summary</h3>'+
+        '<div class="stack" style="margin-top:10px;">'+
+          summaryRow('Doctor', d.name)+summaryRow('Hospital', d.hospital)+summaryRow('Date & time', S.booking.date+', '+S.booking.time)+
+        '</div><hr class="divider">'+
+        '<div class="row between"><span class="h-sm">Total</span><span class="h-md">Rs. '+d.fee.toLocaleString()+'</span></div>'+
+      '</div>'+
+    '</div>';
+  return appShell('patient','find','Payment',body,{back:true});
+}
+function setPayMethod(m){ S.payMethod=m; render(); }
+function submitPayment(){
+  var method=S.payMethod;
+  S._payError=null;
+  var cardEnds0000=false;
+  if(method==='card'){
+    var name=document.getElementById('pay-name').value.trim();
+    var num=document.getElementById('pay-num').value.trim();
+    var exp=document.getElementById('pay-exp').value.trim();
+    var cvv=document.getElementById('pay-cvv').value.trim();
+    if(!name||!num||!exp||!cvv){ S._payError='Please fill in all card details to continue.'; render(); return; }
+    cardEnds0000 = num.replace(/\\s/g,'').slice(-4)==='0000';
+  } else {
+    var holder=document.getElementById('pay-holder').value.trim();
+    if(!holder){ S._payError='Please enter the account holder name.'; render(); return; }
+  }
+  var payBtn=document.getElementById('pay-now-btn');
+  if(payBtn) payBtn.disabled=true;
+  nav('paymentProcessing');
+  setTimeout(function(){
+    if(cardEnds0000){ nav('paymentFailure', false); }
+    else {
+      var d = findDoctorById(S.booking.doctorId) || DOCTORS[0];
+      var confirmation = 'MED-'+Math.floor(10000+Math.random()*89999);
+      var newAppt = {id:'AP-'+Math.floor(10000+Math.random()*89999), doctor:d.name, specialty:d.specialty, hospital:d.hospital, date:S.booking.date+' 2026', time:S.booking.time, status:'Confirmed', payment:'Paid', fee:d.fee};
+      appointments.unshift(newAppt);
+      S.lastConfirmation=confirmation;
+      S.activeAppointmentId=newAppt.id;
+      nav('paymentSuccess', false);
+    }
+    render();
+  }, 1700);
+}
+
+function viewPaymentProcessing(){
+  var body = '<div class="card-flat center" style="padding:60px 20px;max-width:420px;margin:20px auto;">'+
+    '<div class="spinner" style="margin:0 auto 22px;"></div>'+
+    '<h3 class="h-md">Processing your payment…</h3>'+
+    '<p class="small muted" style="margin-top:8px;">Please do not close this window or refresh the page.</p>'+
+    '</div>';
+  return appShell('patient','find','Payment',body);
+}
+
+function viewPaymentSuccess(){
+  var a = findAppointment(S.activeAppointmentId);
+  var body = '<div class="card-flat center" style="max-width:480px;margin:10px auto;padding:36px 28px;">'+
+    '<span style="color:var(--moss);">'+ic('checkCircle',52)+'</span>'+
+    '<h2 class="h-lg" style="margin-top:14px;">Appointment Confirmed</h2>'+
+    '<p class="small muted" style="margin-top:6px;">A confirmation has been sent to your email.</p>'+
+    '<div class="card-flat" style="text-align:left;margin-top:22px;background:var(--paper);">'+
+      summaryRow('Confirmation number', S.lastConfirmation||'MED-00000')+
+      (a?summaryRow('Doctor', a.doctor)+summaryRow('Specialty', a.specialty)+summaryRow('Hospital', a.hospital)+summaryRow('Date & time', a.date+', '+a.time)+summaryRow('Amount paid', 'Rs. '+a.fee.toLocaleString())+summaryRow('Payment status', 'Paid'):'')+
+    '</div>'+
+    '<div class="row wrap" style="margin-top:22px;justify-content:center;">'+
+      btn('View Appointment',{onclick:"nav('appointmentDetails')"})+
+      btn('Back to Dashboard',{variant:'ghost', onclick:"S.navStack=[];nav('patientDashboard',false)"})+
+    '</div>'+
+    '<p class="small" style="margin-top:16px;"><a href="#" style="color:var(--teal-deep);font-weight:700;text-decoration:none;" onclick="toast(\'Receipt download simulated for this prototype.\');return false;">'+ic('doc',14)+' Download receipt</a></p>'+
+    '</div>';
+  return appShell('patient','find','Payment Confirmation',body);
+}
+
+function viewPaymentFailure(){
+  var body = '<div class="card-flat center" style="max-width:480px;margin:10px auto;padding:36px 28px;">'+
+    '<span style="color:var(--coral);">'+ic('xCircle',52)+'</span>'+
+    '<h2 class="h-lg" style="margin-top:14px;">Payment could not be completed</h2>'+
+    '<p class="small muted" style="margin-top:8px;">Your appointment has not been paid for and is not yet confirmed. Your appointment details have been saved.</p>'+
+    '<div class="row wrap" style="margin-top:22px;justify-content:center;">'+
+      btn('Retry Payment',{onclick:"nav('payment')"})+
+      btn('Change Payment Method',{variant:'secondary', onclick:"setPayMethod(S.payMethod==='card'?'bank':'card');nav('payment')"})+
+      btn('Back to Appointment',{variant:'ghost', onclick:"nav('appointmentSummary')"})+
+    '</div>'+
+    '</div>';
+  return appShell('patient','find','Payment Failed',body);
+}
+
+function viewMedicineSearch(){
+  var body =
+    '<div class="card-flat">'+
+      '<div class="row" style="margin-bottom:14px;">'+ic('pill',22)+'<p class="small muted">Check medicine availability before visiting the hospital.</p></div>'+
+      '<div class="grid grid-3">'+
+        field('Medicine name', '<div class="input-icon-wrap">'+textInput('ms-q','text','e.g. Paracetamol')+'<span class="input-icon-btn" style="pointer-events:none;">'+ic('search',18)+'</span></div>', {id:'ms-q'})+
+        field('Hospital / pharmacy', '<select class="input" id="ms-hosp"><option>All Hospitals</option>'+HOSPITALS.map(function(h){return '<option>'+h+'</option>';}).join('')+'</select>', {id:'ms-hosp'})+
+        '<div class="field" style="justify-content:flex-end;">'+btn('Search',{lg:true, icon:'search', onclick:'submitMedicineSearch()'})+'</div>'+
+      '</div>'+
+    '</div>';
+  return appShell('patient','medicine','Medicine Availability',body);
+}
+function submitMedicineSearch(){
+  var q=document.getElementById('ms-q').value.trim().toLowerCase();
+  var hosp=document.getElementById('ms-hosp').value;
+  S.medicineFilter={q:q, hospital:hosp};
+  S.medicineResults = MEDICINES.filter(function(m){
+    return (!q || m.name.toLowerCase().indexOf(q)>-1) && (hosp==='All Hospitals' || m.hospital===hosp);
+  });
+  nav('medicineResults');
+}
+
+function viewMedicineResults(){
+  var results = S.medicineResults || [];
+  var body =
+    '<div class="row between wrap" style="margin-bottom:14px;">'+
+      '<p class="small muted">'+results.length+' result'+(results.length===1?'':'s')+' for "'+(S.medicineFilter.q||'all medicines')+'"'+(S.medicineFilter.hospital&&S.medicineFilter.hospital!=='All Hospitals'?' at '+S.medicineFilter.hospital:'')+'.</p>'+
+      btn('New search',{variant:'ghost', sm:true, onclick:"nav('medicineSearch')"})+
+    '</div>'+
+    (results.length===0?
+      '<div class="card-flat center" style="padding:40px 20px;"><span style="color:var(--mist);">'+ic('pill',34)+'</span><h3 class="h-sm" style="margin-top:12px;">No matching medicines found</h3><p class="small muted" style="margin-top:6px;">We could not find that medicine in our sample records.</p>'+
+      '<div class="row" style="margin-top:16px;justify-content:center;">'+btn('Return to appointment planning',{sm:true, onclick:"nav('findDoctor')"})+btn('Search another hospital',{sm:true, variant:'ghost', onclick:"nav('medicineSearch')"})+'</div></div>'
+      :
+      '<div class="stack">'+results.map(function(m){
+        return '<div class="card-flat"><div class="row between wrap"><div><div class="h-sm">'+m.name+'</div><div class="small muted" style="margin-top:3px;">'+m.hospital+'</div></div>'+medBadge(m.status)+'</div>'+
+        '<div class="row between" style="margin-top:10px;"><span class="small">'+m.stock+'</span><span class="small muted">Updated '+m.updated+'</span></div>'+
+        (m.status==='unavailable'?'<div class="row" style="margin-top:12px;">'+btn('Search another hospital',{sm:true, variant:'ghost', onclick:"nav('medicineSearch')"})+'</div>':'')+
+        '</div>';
+      }).join('')+'</div>'
+    );
+  return appShell('patient','medicine','Medicine Results',body,{back:true});
+}
+
+function viewPatientPayments(){
+  var body = '<div class="table-wrap"><table><thead><tr><th>Appointment</th><th>Doctor</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead><tbody>'+
+    appointments.map(function(a){
+      return '<tr><td class="small" style="font-family:var(--font-mono);">'+a.id+'</td><td>'+a.doctor+'</td><td class="small">'+a.date+'</td><td class="small">Rs. '+a.fee.toLocaleString()+'</td><td>'+badge(a.payment)+'</td></tr>';
+    }).join('')+'</tbody></table></div>';
+  return appShell('patient','payments','Payments',body);
+}
+
+function viewMyAppointments(){
+  var upcoming = appointments.filter(function(a){return a.status==='Confirmed'||a.status==='Pending Payment';});
+  var previous = appointments.filter(function(a){return a.status==='Completed'||a.status==='Cancelled';});
+  function apptCard(a){
+    return '<div class="appt-card"><div class="row between wrap"><div><div class="h-sm">'+a.doctor+'</div><div class="small muted">'+a.specialty+' • '+a.hospital+'</div></div>'+badge(a.status)+'</div>'+
+    '<div class="row" style="margin-top:8px;">'+ic('calendar',15)+'<span class="small">'+a.date+' at '+a.time+'</span></div>'+
+    '<div class="row wrap" style="margin-top:12px;">'+
+      btn('View Details',{sm:true, variant:'ghost', onclick:"S.activeAppointmentId='"+a.id+"';nav('appointmentDetails')"})+
+      (a.status==='Confirmed'?btn('Reschedule',{sm:true, variant:'secondary', onclick:"S.activeAppointmentId='"+a.id+"';nav('reschedule')"}):'')+
+      (a.status==='Confirmed'?btn('Cancel',{sm:true, variant:'danger-ghost', onclick:"confirmCancel('"+a.id+"')"}):'')+
+    '</div></div>';
+  }
+  var body =
+    '<h3 class="h-sm" style="margin-bottom:10px;">Upcoming</h3>'+
+    (upcoming.length? '<div class="stack" style="margin-bottom:26px;">'+upcoming.map(apptCard).join('')+'</div>' : '<p class="small muted" style="margin-bottom:26px;">No upcoming appointments.</p>')+
+    '<h3 class="h-sm" style="margin-bottom:10px;">Previous</h3>'+
+    (previous.length? '<div class="stack">'+previous.map(apptCard).join('')+'</div>' : '<p class="small muted">No previous appointments yet.</p>');
+  return appShell('patient','appointments','My Appointments',body);
+}
+
+function viewAppointmentDetails(){
+  var a = findAppointment(S.activeAppointmentId) || appointments[0];
+  var body = '<div class="card-flat" style="max-width:560px;">'+
+    '<div class="row between"><h3 class="h-md">'+a.doctor+'</h3>'+badge(a.status)+'</div>'+
+    '<div class="small muted" style="margin-top:4px;">'+a.specialty+'</div>'+
+    '<hr class="divider">'+
+    '<div class="stack">'+
+      summaryRow('Hospital', a.hospital)+summaryRow('Date', a.date)+summaryRow('Time', a.time)+
+      summaryRow('Appointment status', a.status)+summaryRow('Payment status', a.payment)+summaryRow('Amount', 'Rs. '+a.fee.toLocaleString())+
+    '</div>'+
+    (a.status==='Confirmed'?
+    '<div class="row" style="margin-top:22px;">'+
+      btn('Reschedule',{onclick:"nav('reschedule')"})+
+      btn('Cancel Appointment',{variant:'danger-ghost', onclick:"confirmCancel('"+a.id+"')"})+
+    '</div>' : '')+
+    '</div>';
+  return appShell('patient','appointments','Appointment Details',body,{back:true});
+}
+
+function confirmCancel(id){
+  openModal(
+    '<div class="center">'+
+    '<span style="color:var(--coral);">'+ic('alertTriangle',36)+'</span>'+
+    '<h3 class="h-md" style="margin-top:12px;">Are you sure you want to cancel this appointment?</h3>'+
+    '<p class="small muted" style="margin-top:8px;">This action cannot be undone. Your slot will be released to other patients.</p>'+
+    '<div class="stack" style="margin-top:20px;">'+
+      btn('Yes, Cancel Appointment',{block:true, variant:'danger', onclick:"doCancel('"+id+"')"})+
+      btn('Keep Appointment',{block:true, variant:'ghost', onclick:'closeModal()'})+
+    '</div></div>'
+  );
+}
+function doCancel(id){
+  var a=findAppointment(id);
+  if(a){ a.status='Cancelled'; a.payment='Refunded'; }
+  closeModal();
+  toast('Appointment cancelled.');
+  nav('myAppointments', false);
+}
+
+function viewReschedule(){
+  var a = findAppointment(S.activeAppointmentId) || appointments[0];
+  var d = DOCTORS.filter(function(x){return x.name===a.doctor;})[0] || DOCTORS[0];
+  if(!S._rsDate) S._rsDate = Object.keys(d.slots)[0];
+  var times = d.slots[S._rsDate]||[];
+  var allTimes = ['09:00 AM','10:00 AM','11:00 AM','01:00 PM','02:00 PM','03:00 PM','04:30 PM'];
+  var body = '<div class="card-flat" style="max-width:560px;">'+
+    '<p class="small muted">Currently scheduled for <b>'+a.date+' at '+a.time+'</b> with '+a.doctor+'.</p>'+
+    '<h3 class="h-sm" style="margin-top:16px;">Select a new date</h3>'+
+    '<div class="chip-row" style="margin-top:8px;">'+Object.keys(d.slots).map(function(dt){
+      return '<button class="chip '+(S._rsDate===dt?'selected':'')+'" onclick="S._rsDate=\''+dt+'\';S._rsTime=null;render()">'+dt+'</button>';
+    }).join('')+'</div>'+
+    '<h3 class="h-sm" style="margin-top:18px;">Select a new time</h3>'+
+    (times.length===0?'<div class="alert alert-info" style="margin-top:10px;">'+ic('alertTriangle',18)+'<span>No slots available on this date.</span></div>':
+    '<div class="chip-row" style="margin-top:8px;">'+allTimes.map(function(t){
+      var avail=times.indexOf(t)>-1;
+      if(!avail) return '<button class="chip" disabled>'+t+'</button>';
+      return '<button class="chip '+(S._rsTime===t?'selected':'')+'" onclick="S._rsTime=\''+t+'\';render()">'+t+'</button>';
+    }).join('')+'</div>')+
+    '<div class="row" style="margin-top:22px;">'+
+      btn('Confirm Reschedule',{disabled:!(S._rsDate&&S._rsTime), onclick:'submitReschedule(\''+a.id+'\')'})+
+      btn('Cancel',{variant:'ghost', onclick:'back()'})+
+    '</div></div>';
+  return appShell('patient','appointments','Reschedule Appointment',body,{back:true});
+}
+function submitReschedule(id){
+  var a=findAppointment(id);
+  if(a){ a.date=S._rsDate+' 2026'; a.time=S._rsTime; }
+  S._rsDate=null; S._rsTime=null;
+  toast('Appointment rescheduled successfully.');
+  nav('appointmentDetails', false);
+}
+
+function viewProfile(){
+  var role = S.user?S.user.role:'patient';
+  var u = S.user || {name:'', email:'', phone:''};
+  var body = '<div class="card-flat" style="max-width:480px;">'+
+    field('Full name', textInput('pr-name','text','Full name', u.name), {id:'pr-name'})+
+    field('Email address', textInput('pr-email','email','Email address', u.email), {id:'pr-email'})+
+    (role==='patient'?field('Phone number', textInput('pr-phone','tel','Phone number', u.phone), {id:'pr-phone'}):'')+
+    '<div class="row" style="margin-top:6px;">'+btn('Save Changes',{onclick:'saveProfile()'})+btn('Logout',{variant:'danger-ghost', icon:'logout', onclick:'doLogout()'})+'</div>'+
+    '</div>';
+  return appShell(role, role==='doctor'?'dprofile':role==='staff'?'sprofile':'profile','Profile',body);
+}
+function saveProfile(){
+  if(S.user){
+    S.user.name=document.getElementById('pr-name').value.trim()||S.user.name;
+    S.user.email=document.getElementById('pr-email').value.trim()||S.user.email;
+    var ph=document.getElementById('pr-phone'); if(ph) S.user.phone=ph.value.trim()||S.user.phone;
+  }
+  toast('Profile updated.');
+  render();
+}
+
+/* =========================================================
+   VIEWS — DOCTOR PORTAL
+   ========================================================= */
+function viewDoctorDashboard(){
+  var today = doctorPatients.filter(function(p){return p.date==='Today';});
+  var body =
+    '<div class="grid grid-3" style="margin-bottom:20px;">'+
+      statCard('calendar', today.length, "Today's appointments", 'teal')+
+      statCard('clock', doctorPatients.length, 'Upcoming total', 'sky')+
+      statCard('checkCircle', Object.values(S.doctorAvailability).reduce(function(a,b){return a+b.length;},0), 'Open slots this week', 'moss')+
+    '</div>'+
+    '<div class="grid grid-2">'+
+      '<div class="card-flat"><h3 class="h-sm">Quick actions</h3><div class="stack" style="margin-top:12px;">'+
+        btn('Manage Availability',{block:true, variant:'secondary', icon:'calendar', onclick:"nav('doctorAvailability')"})+
+        btn('View Appointments',{block:true, variant:'secondary', icon:'clock', onclick:"nav('doctorSchedule')"})+
+        btn('View Patients',{block:true, variant:'ghost', icon:'user', onclick:"nav('doctorSchedule')"})+
+      '</div></div>'+
+      '<div class="card-flat"><h3 class="h-sm">Today\'s schedule</h3><div class="stack" style="margin-top:12px;">'+
+        (today.length? today.map(function(p){return '<div class="row between small"><span>'+p.name+' — '+p.time+'</span>'+badge(p.status)+'</div>';}).join('') : '<p class="small muted">No appointments scheduled for today.</p>')+
+      '</div></div>'+
+    '</div>';
+  return appShell('doctor','ddashboard','Doctor Dashboard',body);
+}
+function statCard(icon,num,label,color){
+  return '<div class="card-flat"><span style="color:var(--'+color+');">'+ic(icon,22)+'</span><div class="h-lg" style="margin-top:10px;">'+num+'</div><div class="small muted">'+label+'</div></div>';
+}
+
+function viewDoctorAvailability(){
+  var slots = S.doctorAvailability;
+  var allTimes = ['09:00 AM','10:00 AM','11:00 AM','01:00 PM','02:00 PM','03:00 PM','04:30 PM'];
+  var body = '<div class="card-flat"><p class="small muted">Tap a time slot to mark it available or unavailable for patients booking online.</p>'+
+    Object.keys(slots).map(function(dt){
+      return '<div style="margin-top:20px;"><h3 class="h-sm">'+dt+'</h3><div class="chip-row" style="margin-top:10px;">'+
+      allTimes.map(function(t){
+        var on = slots[dt].indexOf(t)>-1;
+        return '<button class="chip '+(on?'selected':'')+'" onclick="toggleSlot(\''+dt+'\',\''+t+'\')">'+(on?ic('check',13):'')+' '+t+'</button>';
+      }).join('')+'</div></div>';
+    }).join('')+
+    '<div style="margin-top:26px;">'+btn('Update Availability',{lg:true, onclick:"toast('Availability updated.')"})+'</div>'+
+    '</div>';
+  return appShell('doctor','davail','Manage Availability',body);
+}
+function toggleSlot(dt,t){
+  var arr=S.doctorAvailability[dt];
+  var i=arr.indexOf(t);
+  if(i>-1) arr.splice(i,1); else arr.push(t);
+  render();
+}
+
+function viewDoctorSchedule(){
+  var tab = S._docTab || 'today';
+  var groups = {today: doctorPatients.filter(function(p){return p.date==='Today';}), upcoming: doctorPatients.filter(function(p){return p.date!=='Today' && p.status!=='Completed';}), previous: doctorPatients.filter(function(p){return p.status==='Completed';})};
+  var body = '<div class="chip-row" style="margin-bottom:16px;">'+
+    ['today','upcoming','previous'].map(function(t){return '<button class="chip '+(tab===t?'selected':'')+'" onclick="S._docTab=\''+t+'\';render()">'+t.charAt(0).toUpperCase()+t.slice(1)+'</button>';}).join('')+
+    '</div>'+
+    '<div class="table-wrap"><table><thead><tr><th>Patient</th><th>Date</th><th>Time</th><th>Status</th><th></th></tr></thead><tbody>'+
+    groups[tab].map(function(p,i){
+      return '<tr><td>'+p.name+'</td><td>'+p.date+'</td><td>'+p.time+'</td><td>'+badge(p.status)+'</td><td>'+btn('View',{sm:true, variant:'ghost', onclick:"S._activeDoctorPatient="+i+";S._docTabCache='"+tab+"';nav('doctorAppointmentDetails')"})+'</td></tr>';
+    }).join('')+
+    '</tbody></table></div>';
+  return appShell('doctor','dappts','Appointment Schedule',body);
+}
+
+function viewDoctorAppointmentDetails(){
+  var tab = S._docTabCache||'today';
+  var groups = {today: doctorPatients.filter(function(p){return p.date==='Today';}), upcoming: doctorPatients.filter(function(p){return p.date!=='Today' && p.status!=='Completed';}), previous: doctorPatients.filter(function(p){return p.status==='Completed';})};
+  var p = groups[tab][S._activeDoctorPatient||0] || doctorPatients[0];
+  var body = '<div class="card-flat" style="max-width:480px;">'+
+    '<h3 class="h-md">'+p.name+'</h3>'+
+    '<div class="stack" style="margin-top:12px;">'+summaryRow('Date', p.date)+summaryRow('Time', p.time)+summaryRow('Status', p.status)+'</div>'+
+    field('Update status', '<select class="input" id="doc-appt-status"><option '+(p.status==='Confirmed'?'selected':'')+'>Confirmed</option><option '+(p.status==='Completed'?'selected':'')+'>Completed</option><option '+(p.status==='Cancelled'?'selected':'')+'>Cancelled</option></select>', {id:'doc-appt-status'})+
+    btn('Save Changes',{onclick:"p.status=document.getElementById('doc-appt-status').value;toast('Appointment updated.');render();"})+
+    '</div>';
+  return appShell('doctor','dappts','Appointment Details',body,{back:true});
+}
+
+/* =========================================================
+   VIEWS — STAFF PORTAL
+   ========================================================= */
+function viewStaffDashboard(){
+  var avail = DOCTORS.filter(function(d){return d.status!=='unavailable';}).length;
+  var body = '<div class="grid grid-4" style="margin-bottom:20px;">'+
+    statCard('user', DOCTORS.length, 'Total doctors', 'teal')+
+    statCard('checkCircle', avail, 'Available doctors', 'moss')+
+    statCard('calendar', appointments.length, 'Appointments', 'sky')+
+    statCard('pill', MEDICINES.filter(function(m){return m.status==='available';}).length+'/'+MEDICINES.length, 'Medicines in stock', 'amber')+
+    '</div>'+
+    '<div class="card-flat"><h3 class="h-sm">Quick actions</h3><div class="row wrap" style="margin-top:12px;">'+
+    btn('Manage Doctors',{variant:'secondary', onclick:"nav('staffDoctors')"})+
+    btn('Manage Medicine',{variant:'secondary', onclick:"nav('staffMedicine')"})+
+    btn('Appointments & Payments',{variant:'secondary', onclick:"nav('staffAppointments')"})+
+    '</div></div>';
+  return appShell('staff','sdashboard','Staff Dashboard',body);
+}
+
+function viewStaffDoctors(){
+  var body = '<div class="row" style="margin-bottom:14px;max-width:360px;">'+field('Search doctors', '<div class="input-icon-wrap">'+textInput('sd-q','text','Search by name or specialty')+'<span class="input-icon-btn" style="pointer-events:none;">'+ic('search',18)+'</span></div>', {id:'sd-q'})+'</div>'+
+    '<div class="table-wrap"><table><thead><tr><th>Doctor</th><th>Specialty</th><th>Hospital</th><th>Availability</th><th>Status</th><th>Actions</th></tr></thead><tbody>'+
+    DOCTORS.map(function(d){
+      return '<tr><td>'+d.name+'</td><td>'+d.specialty+'</td><td>'+d.hospital+'</td><td>'+d.next+'</td><td>'+badge(d.status)+'</td>'+
+      '<td class="row" style="border:none;gap:6px;">'+btn('Edit',{sm:true, variant:'ghost', onclick:"toast('Edit form opened (demo).')"})+btn('Update Availability',{sm:true, variant:'ghost', onclick:"toast('Availability editor opened (demo).')"})+'</td></tr>';
+    }).join('')+'</tbody></table></div>';
+  return appShell('staff','sdoctors','Manage Doctors',body);
+}
+
+function viewStaffMedicine(){
+  var body = '<div class="table-wrap"><table><thead><tr><th>Medicine</th><th>Hospital</th><th>Availability</th><th>Stock status</th><th>Last updated</th><th>Actions</th></tr></thead><tbody>'+
+    MEDICINES.map(function(m,i){
+      return '<tr><td>'+m.name+'</td><td>'+m.hospital+'</td><td>'+medBadge(m.status)+'</td><td class="small">'+m.stock+'</td><td class="small muted">'+m.updated+'</td>'+
+      '<td>'+btn('Update',{sm:true, variant:'ghost', onclick:"cycleMedStatus("+i+")"})+'</td></tr>';
+    }).join('')+'</tbody></table></div>';
+  return appShell('staff','smedicine','Manage Medicine Availability',body);
+}
+function cycleMedStatus(i){
+  var order=['available','limited','unavailable'];
+  var m=MEDICINES[i];
+  var idx=(order.indexOf(m.status)+1)%3;
+  m.status=order[idx];
+  m.updated='Just now';
+  m.stock = m.status==='available'?'In stock': m.status==='limited'?'Low stock':'Out of stock';
+  toast(m.name+' at '+m.hospital+' updated to '+m.status+'.');
+  render();
+}
+
+function viewStaffAppointments(){
+  var body = '<div class="table-wrap"><table><thead><tr><th>ID</th><th>Doctor</th><th>Date</th><th>Time</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead><tbody>'+
+    appointments.map(function(a){
+      return '<tr><td class="small" style="font-family:var(--font-mono);">'+a.id+'</td><td>'+a.doctor+'</td><td class="small">'+a.date+'</td><td class="small">'+a.time+'</td><td>'+badge(a.payment)+'</td><td>'+badge(a.status)+'</td>'+
+      '<td>'+btn('Verify',{sm:true, variant:'ghost', onclick:"toast('Appointment "+a.id+" verified.')"})+'</td></tr>';
+    }).join('')+'</tbody></table></div>';
+  return appShell('staff','sappts','Appointment & Payment Management',body);
+}
+
+/* =========================================================
+   ROUTER TABLE + RENDER
+   ========================================================= */
+var VIEWS = {
+  landing: viewLanding,
+  login: viewLogin,
+  register: viewRegister,
+  portalSelect: viewPortalSelect,
+  doctorLogin: viewDoctorLogin,
+  staffLogin: viewStaffLogin,
+  patientDashboard: viewPatientDashboard,
+  findDoctor: viewFindDoctor,
+  doctorResults: viewDoctorResults,
+  doctorDetails: viewDoctorDetails,
+  selectSlot: viewSelectSlot,
+  appointmentSummary: viewAppointmentSummary,
+  patientDetails: viewPatientDetails,
+  payment: viewPayment,
+  paymentProcessing: viewPaymentProcessing,
+  paymentSuccess: viewPaymentSuccess,
+  paymentFailure: viewPaymentFailure,
+  medicineSearch: viewMedicineSearch,
+  medicineResults: viewMedicineResults,
+  patientPayments: viewPatientPayments,
+  myAppointments: viewMyAppointments,
+  appointmentDetails: viewAppointmentDetails,
+  reschedule: viewReschedule,
+  profile: viewProfile,
+  doctorDashboard: viewDoctorDashboard,
+  doctorAvailability: viewDoctorAvailability,
+  doctorSchedule: viewDoctorSchedule,
+  doctorAppointmentDetails: viewDoctorAppointmentDetails,
+  staffDashboard: viewStaffDashboard,
+  staffDoctors: viewStaffDoctors,
+  staffMedicine: viewStaffMedicine,
+  staffAppointments: viewStaffAppointments
+};
+
+function render(){
+  var fn = VIEWS[S.view] || viewLanding;
+  document.getElementById('app').innerHTML = fn();
+}
+render();
+</script>
+</body>
+</html>
