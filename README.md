@@ -1,7 +1,7 @@
-# MediLink — Community Healthcare Information & Support Platform
+# MediLink - Community Healthcare Information & Support Platform
 
 <p align="center">
-  <img src="docs/assets/medilink-logo.png" alt="MediLink Logo" width="180"/>
+  <img src="docs/assets/medilink-logo.png" alt="MediLink Logo" width="300"/>
 </p>
 
 <p align="center"><strong>Connecting Care. Simplifying Access.</strong></p>
@@ -123,7 +123,7 @@ Questionnaire-Based Requirement Gathering
      ↓
 Requirement Analysis
      ↓
-Task Analysis / HTA
+Task Analysis / HCI
      ↓
 Mental Model
      ↓
@@ -150,7 +150,7 @@ The project reported **103 questionnaire responses**, with smartphone ownership 
 
 MediLink applies the following HCI principles:
 
-### 1. Know Thy User
+### 1. Know The User
 
 The system considers different user roles and their different tasks.
 
@@ -351,7 +351,6 @@ medilink-healthcare-platform/
 ├── docs/
 │   ├── assets/
 │   │   └── medilink-logo.png
-│   ├── screenshots/
 │   └── reports/
 │
 ├── .github/
@@ -359,7 +358,6 @@ medilink-healthcare-platform/
 │
 ├── .gitignore
 ├── .env.example
-├── CONTRIBUTING.md
 ├── LICENSE
 ├── package.json
 └── README.md
@@ -450,8 +448,8 @@ Use `.env` for local secrets and `.env.example` for documenting required configu
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/medilink-healthcare-platform.git
-cd medilink-healthcare-platform
+git clone https://github.com/DewmikaSenarathna/MediLink-HealthCare-Platform.git
+cd Medilink-Healthcare-Platform
 ```
 
 ### 2. Install Dependencies
@@ -536,40 +534,6 @@ Profile
 Doctor Dashboard
 Staff Dashboard
 ```
-
-### Recommended Screenshot Structure
-
-```text
-docs/
-└── screenshots/
-    ├── landing.png
-    ├── login.png
-    ├── dashboard.png
-    ├── doctor-search.png
-    ├── appointment.png
-    ├── payment.png
-    ├── medicine.png
-    └── confirmation.png
-```
-
-Example:
-
-```markdown
-## Interface Preview
-
-### Patient Dashboard
-![Patient Dashboard](docs/screenshots/dashboard.png)
-
-### Doctor Search
-![Doctor Search](docs/screenshots/doctor-search.png)
-
-### Appointment Booking
-![Appointment Booking](docs/screenshots/appointment.png)
-
-### Payment
-![Payment](docs/screenshots/payment.png)
-```
-
 ---
 
 ## 🧠 HCI & UX Focus
@@ -671,50 +635,9 @@ MediLink should therefore be understood as a **functional academic prototype and
 
 ---
 
-## 📚 Academic Context
-
-**Course:** EC9540 — Human Computer Interaction  
-**Project:** MediLink — A Community Healthcare Information and Support Platform  
-**Technology:** MERN Stack  
-**Focus:** Human-Computer Interaction + Full-Stack Web Development
-
-The project demonstrates how HCI principles can be carried from **user research and requirements engineering through interface design and into a working full-stack implementation**.
-
----
-
-## 👨‍💻 Development Approach
-
-```text
-Research
-   ↓
-Understand Users
-   ↓
-Identify Problems
-   ↓
-Define Requirements
-   ↓
-Analyse Tasks
-   ↓
-Design Interaction
-   ↓
-Implement Interface
-   ↓
-Develop Backend
-   ↓
-Connect Database
-   ↓
-Validate Workflows
-   ↓
-Iterate
-```
-
-This approach helps ensure that technical implementation remains connected to the actual needs of the intended users.
-
----
-
 ## 🤝 Contributing
 
-Contributions, suggestions, and improvements are welcome.
+Contributions, suggestions and improvements are welcome.
 
 For major changes:
 
@@ -741,44 +664,10 @@ If a specific open-source license is selected for the repository, replace this s
 
 ---
 
-## 🌐 Project Identity
-
-### MediLink
-
-**Tagline:**
-
-> **Connecting Care. Simplifying Access.**
-
-### Core Idea
-
-```text
-Find Care
-    +
-Book Care
-    +
-Check Medicine
-    +
-Pay Securely
-    =
-MediLink
-```
-
 ---
+<br>
 
-## ⭐ Why MediLink?
-
-MediLink combines three important dimensions:
-
-### 👥 Human-Centred Design
-
-The interface is built around identified user needs and HCI principles.
-
-### 💻 Modern Full-Stack Engineering
-
-The platform uses React, Node.js, Express, and MongoDB to provide a structured full-stack architecture.
-
-### 🏥 Practical Healthcare Problem Solving
-
-The system focuses on practical problems such as doctor discovery, appointment booking, medicine availability, and payment workflows.
-
-**MediLink is more than a collection of web pages — it is a user-centred healthcare platform designed to connect people with essential healthcare services through a clear, structured, and accessible digital experience.**
+<p align="center">
+  <strong>MediLink</strong><br>
+  <em>Community Healthcare Information & Support Platform.</em>
+</p>
