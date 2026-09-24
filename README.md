@@ -664,7 +664,6 @@ If a specific open-source license is selected for the repository, replace this s
 
 ---
 
----
 <br>
 
 <p align="center">
